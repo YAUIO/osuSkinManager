@@ -1,0 +1,21 @@
+# ninja log v5
+1	45	7430442441917780	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-mkdir	dea72460217e0a01
+1	45	7430442441917780	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-mkdir	dea72460217e0a01
+45	4123	7430442482683025	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-download	cc1cda070ef9333a
+45	4123	7430442482683025	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-download	cc1cda070ef9333a
+4123	4297	0	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-update	df7dcd594be82dd5
+4123	4297	0	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-update	df7dcd594be82dd5
+4297	4354	7430442484993025	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-patch	81adab9acf30af86
+4297	4354	7430442484993025	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-patch	81adab9acf30af86
+4354	4410	7430442485553042	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-configure	eee61b45e5503a4c
+4354	4410	7430442485553042	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-configure	eee61b45e5503a4c
+4410	4494	7430442486383033	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-build	89da75190e7ade9a
+4410	4494	7430442486383033	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-build	89da75190e7ade9a
+4494	4547	7430442486933019	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-install	b9d7fca4b1a3d3a7
+4494	4547	7430442486933019	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-install	b9d7fca4b1a3d3a7
+4548	4595	7430442487413016	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-test	4ab350c3a4464b48
+4548	4595	7430442487413016	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-test	4ab350c3a4464b48
+4595	4666	7430442488123031	CMakeFiles/fmt-populate-complete	7aa722336252dc21
+4595	4666	7430442488123031	fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-done	7aa722336252dc21
+4595	4666	7430442488123031	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/CMakeFiles/fmt-populate-complete	7aa722336252dc21
+4595	4666	7430442488123031	F:/Users/User/Documents/СPPProjects/osuSkinManager/cmake-build-debug/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/fmt-populate-done	7aa722336252dc21
