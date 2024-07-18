@@ -30,17 +30,18 @@ void setFillColorDraw(sf::RenderWindow &window, sf::Text &text, sf::Color const 
 void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements) {
     int i = 0;
     while (i < elements.size()) {
-        if (GUI::isCursorOnButton(window, elements[i])) {
-            setFillColorDraw(window, elements[i], sf::Color::Green);
-        } else {
-            setFillColorDraw(window, elements[i], sf::Color::White);
+        if(elements[i].getFillColor() != sf::Color::Magenta) {
+            if (GUI::isCursorOnButton(window, elements[i])) {
+                setFillColorDraw(window, elements[i], sf::Color::Green);
+            } else {
+                setFillColorDraw(window, elements[i], sf::Color::White);
+            }
         }
         i++;
     }
 }
 
-std::vector<sf::Text> GUI::getMainGraphics(sf::RenderWindow & window, std::vector<File> & files, int const& skip, sf::RectangleShape & rect){
-    auto buttons = std::vector<sf::Text>();
+std::vector<sf::Text> GUI::getMainGraphics(std::vector<sf::Text> buttons, sf::RenderWindow & window, std::vector<File> & files, int const& skip, sf::RectangleShape & rect){
     int i = 0;
     int d = 0;
 

@@ -7,6 +7,7 @@
 //std::string Files::osuPath = "/home/yudek/osu/Skins";
 std::string Files::osuPath = "G:\\osu!\\Skins";
 sf::Font GUI::font;
+
 int main() {
     GUI::font.loadFromFile("deps/font.ttf");
 
@@ -23,21 +24,21 @@ int main() {
     while (window.isOpen()) {
         window.clear(sf::Color::Black);
 
-        if(!isSkinListReady) {
+        if (!isSkinListReady) {
             try {
                 skins = Files::getSkins();
-            }catch (std::exception & e){
+            } catch (std::exception &e) {
                 window.close();
-                fmt::println("{}",e.what());
+                fmt::println("{}", e.what());
             }
             isSkinListReady = true;
         }
 
         auto gui = GUI::getMainGraphics(window, skins, skip, rect);
 
-        if(trackCursor){
+        if (trackCursor) {
             int y = sf::Mouse::getPosition(window).y;
-            if(y<window.getSize().y-rect.getSize().y && y>0) {
+            if (y < window.getSize().y - rect.getSize().y && y > 0) {
                 rect.setPosition(rect.getPosition().x, y);
                 skip = static_cast<int>(static_cast<float>(skins.size()) *
                                         (static_cast<float>(y) / static_cast<float>(window.getSize().y)));
@@ -45,29 +46,44 @@ int main() {
         }
 
         while (window.pollEvent(event)) {
-            if(event.type == sf::Event::Closed) {
+            if (event.type == sf::Event::Closed) {
                 window.close();
             }
 
-            if(event.type == sf::Event::MouseWheelScrolled) {
-                skip -= static_cast<int>(static_cast<double>(event.mouseWheelScroll.delta)*1.5);
-                if(skip<0) {
+            if (event.type == sf::Event::MouseWheelScrolled) {
+                skip -= static_cast<int>(static_cast<double>(event.mouseWheelScroll.delta) * 1.5);
+                if (skip < 0) {
                     skip = 0;
                 }
-                if(skip>skins.size()-6) {
-                    skip = skins.size()-6;
+                if (skip > skins.size() - 6) {
+                    skip = skins.size() - 6;
                 }
             }
 
-            if(event.type == sf::Event::MouseButtonPressed && window.getSize().x - sf::Mouse::getPosition(window).x <= 40){
-                trackCursor = true;
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (window.getSize().x - sf::Mouse::getPosition(window).x <= 40) {
+                    trackCursor = true;
+                }else {
+                    for (sf::Text & button : gui){
+                        if (GUI::isCursorOnButton(window,button)){
+                            if(button.getFillColor() == sf::Color::Magenta){
+                                button.setFillColor(sf::Color::White);
+                            }else {
+                                button.setFillColor(sf::Color::Magenta);
+                                fmt::println("aa");
+                            }
+                            break;
+                        }
+                    }
+                }
             }
 
-            if(event.type == sf::Event::MouseButtonReleased){
+            if (event.type == sf::Event::MouseButtonReleased) {
                 trackCursor = false;
             }
         }
 
         window.display();
     }
+
 }
