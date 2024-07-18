@@ -24,8 +24,9 @@ FETCHCONTENT_MAKEAVAILABLE(SFML)
 add_executable(osuSkinManager main.cpp
         Files.cpp
         Files.h
-        Button.cpp
-        Button.hpp)
+        GUI.cpp
+        GUI.h
+)
 
 TARGET_LINK_LIBRARIES(osuSkinManager fmt)
 target_link_libraries(osuSkinManager sfml-graphics)
