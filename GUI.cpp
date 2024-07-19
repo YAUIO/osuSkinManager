@@ -27,41 +27,57 @@ void setFillColorDraw(sf::RenderWindow &window, sf::Text &text, sf::Color const 
     window.draw(text);
 }
 
-void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements) {
-    int i = 0;
+void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements, int const& skip) {
+    int i = skip;
     while (i < elements.size()) {
-        if(elements[i].getFillColor() != sf::Color::Magenta) {
+        if (elements[i].getFillColor() != sf::Color::Magenta) {
             if (GUI::isCursorOnButton(window, elements[i])) {
                 setFillColorDraw(window, elements[i], sf::Color::Green);
             } else {
                 setFillColorDraw(window, elements[i], sf::Color::White);
             }
+        }else {
+            window.draw(elements[i]);
         }
         i++;
     }
 }
 
-std::vector<sf::Text> GUI::getMainGraphics(std::vector<sf::Text> buttons, sf::RenderWindow & window, std::vector<File> & files, int const& skip, sf::RectangleShape & rect){
+std::vector<sf::Text>
+GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> buttons, sf::RenderWindow &window, std::vector<File> &files,
+                     int const &skip, sf::RectangleShape &rect) {
     int i = 0;
     int d = 0;
 
-    rect = sf::RectangleShape(sf::Vector2f(20,20));
+    rect = sf::RectangleShape(sf::Vector2f(20, 20));
     rect.setFillColor(sf::Color::White);
-    rect.setPosition(window.getSize().x-rect.getSize().x,static_cast<float>(skip)/static_cast<float>(files.size())*window.getSize().y);
+    rect.setPosition(window.getSize().x - rect.getSize().x,
+                     static_cast<float>(skip) / static_cast<float>(files.size()) * window.getSize().y);
     window.draw(rect);
 
-    for (File & skin : files) {
-        if (i>skip-1) {
-            auto button = sf::Text(skin.name,font,22);
-            button.setPosition(sf::Vector2f(window.getSize().x/2-button.getLocalBounds().width/2,d*30));
-            window.draw(button);
-            buttons.push_back(button);
-            d++;
+
+    if(isListNew) {
+        for (File &skin: files) {
+            if (i > skip - 1) {
+                auto button = sf::Text(skin.name, font, 22);
+                button.setPosition(sf::Vector2f(window.getSize().x / 2 - button.getLocalBounds().width / 2, d * 30));
+                buttons.push_back(button);
+                d++;
+            }
+            i++;
         }
-        i++;
+        isListNew = false;
+    }else{
+        for (sf::Text &text : buttons){
+            if (i > skip - 1) {
+                text.setPosition(sf::Vector2f(window.getSize().x / 2 - text.getLocalBounds().width / 2, d * 30));
+                d++;
+            }
+            i++;
+        }
     }
 
-    setActiveTextColor(window,buttons);
+    setActiveTextColor(window, buttons, skip);
 
     return buttons;
 }

@@ -17,9 +17,14 @@ int main() {
     sf::Event event;
     sf::RectangleShape rect;
     bool isSkinListReady = false;
+    bool isSkinListNew = true;
     bool trackCursor = false;
+    bool shiftSelection = false;
     auto skins = std::vector<File>();
+    auto gui = std::vector<sf::Text>();
     int skip = 0;
+    int lastSel = -1;
+    bool lastSelected = true;
 
     while (window.isOpen()) {
         window.clear(sf::Color::Black);
@@ -34,7 +39,7 @@ int main() {
             isSkinListReady = true;
         }
 
-        auto gui = GUI::getMainGraphics(window, skins, skip, rect);
+        gui = GUI::getMainGraphics(isSkinListNew, gui, window, skins, skip, rect);
 
         if (trackCursor) {
             int y = sf::Mouse::getPosition(window).y;
@@ -55,25 +60,81 @@ int main() {
                 if (skip < 0) {
                     skip = 0;
                 }
-                if (skip > skins.size() - 6) {
-                    skip = skins.size() - 6;
+                if (skip > skins.size() - 18) {
+                    skip = skins.size() - 18;
+                }
+            }
+
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Key::LShift) {
+                    shiftSelection = true;
+                }
+            }
+
+            if (event.type == sf::Event::KeyReleased) {
+                if (event.key.code == sf::Keyboard::Key::LShift) {
+                    shiftSelection = false;
                 }
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (window.getSize().x - sf::Mouse::getPosition(window).x <= 40) {
                     trackCursor = true;
-                }else {
-                    for (sf::Text & button : gui){
-                        if (GUI::isCursorOnButton(window,button)){
-                            if(button.getFillColor() == sf::Color::Magenta){
-                                button.setFillColor(sf::Color::White);
-                            }else {
-                                button.setFillColor(sf::Color::Magenta);
-                                fmt::println("aa");
+                } else {
+                    if (!shiftSelection) {
+                        int i = 0;
+                        for (sf::Text &button: gui) {
+                            if (GUI::isCursorOnButton(window, button)) {
+                                if (button.getFillColor() == sf::Color::Magenta) {
+                                    button.setFillColor(sf::Color::White);
+                                    lastSelected = false;
+                                } else {
+                                    button.setFillColor(sf::Color::Magenta);
+                                    lastSelected = true;
+                                }
+                                lastSel = i;
+                                break;
                             }
-                            break;
+                            i++;
                         }
+                    } else {
+                        int first = 0;
+                        for (sf::Text &button: gui) {
+                            if (GUI::isCursorOnButton(window, button)) {
+                                if (button.getFillColor() == sf::Color::Magenta) {
+                                    button.setFillColor(sf::Color::White);
+                                } else {
+                                    button.setFillColor(sf::Color::Magenta);
+                                }
+                                break;
+                            }
+                            first++;
+                        }
+                        int buf = -1;
+                        if(lastSel!=-1) {
+                            buf = first;
+                            if (first < lastSel){
+                                while (first < lastSel){
+                                    if (lastSelected){
+                                        gui[first].setFillColor(sf::Color::Magenta);
+                                    }else{
+                                        gui[first].setFillColor(sf::Color::White);
+                                    }
+                                    first++;
+                                }
+                            }else{
+                                while (first > lastSel){
+                                    if (lastSelected){
+                                        gui[first].setFillColor(sf::Color::Magenta);
+                                    }else{
+                                        gui[first].setFillColor(sf::Color::White);
+                                    }
+                                    first--;
+                                }
+                            }
+                        }
+                        lastSel = buf;
+                        first = 0;
                     }
                 }
             }
