@@ -45,14 +45,14 @@ void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &element
 
 std::vector<sf::Text>
 GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> buttons, sf::RenderWindow &window, std::vector<File> &files,
-                     int const &skip, sf::RectangleShape &rect) {
+                     int const &skip, sf::RectangleShape &rect, sf::RectangleShape const& menuBase) {
     int i = 0;
     int d = 0;
 
     rect = sf::RectangleShape(sf::Vector2f(20, 20));
     rect.setFillColor(sf::Color::White);
     rect.setPosition(window.getSize().x - rect.getSize().x,
-                     static_cast<float>(skip) / static_cast<float>(files.size()) * window.getSize().y);
+                     static_cast<float>(skip) / static_cast<float>(files.size()) * (window.getSize().y-menuBase.getSize().y));
     window.draw(rect);
 
 
@@ -80,4 +80,24 @@ GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> buttons, sf::RenderW
     setActiveTextColor(window, buttons, skip);
 
     return buttons;
+}
+
+void GUI::getMenuGraphics(sf::RenderWindow & window, sf::RectangleShape & base){
+    auto menu = std::vector<sf::Text>();
+    base = sf::RectangleShape(sf::Vector2f(window.getSize().x,140));
+    base.setFillColor(sf::Color::Cyan);
+    base.setPosition(0,window.getSize().y-base.getSize().y);
+    window.draw(base);
+
+    auto text = std::vector<std::string>{"Next group","Apply","Previous group","Reset","Settings"};
+
+    int i = 0;
+
+    for (std::string const& s : text){
+        auto t = sf::Text(s,font,30);
+        t.setFillColor(sf::Color::White);
+        t.setPosition(sf::Vector2f(20+(i%2)*360,base.getPosition().y+10+(i-i%2)*20));
+        window.draw(t);
+        i++;
+    }
 }

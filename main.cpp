@@ -11,11 +11,12 @@ sf::Font GUI::font;
 int main() {
     GUI::font.loadFromFile("deps/font.ttf");
 
-    auto window = sf::RenderWindow(sf::VideoMode(900, 600), "SkinManager");
+    auto window = sf::RenderWindow(sf::VideoMode(800, 900), "SkinManager");
     window.setFramerateLimit(240);
 
     sf::Event event;
     sf::RectangleShape rect;
+    sf::RectangleShape menuBase;
     bool isSkinListReady = false;
     bool isSkinListNew = true;
     bool trackCursor = false;
@@ -39,14 +40,14 @@ int main() {
             isSkinListReady = true;
         }
 
-        gui = GUI::getMainGraphics(isSkinListNew, gui, window, skins, skip, rect);
+        gui = GUI::getMainGraphics(isSkinListNew, gui, window, skins, skip, rect, menuBase);
+        GUI::getMenuGraphics(window, menuBase);
 
         if (trackCursor) {
             int y = sf::Mouse::getPosition(window).y;
-            if (y < window.getSize().y - rect.getSize().y && y > 0) {
-                rect.setPosition(rect.getPosition().x, y);
+            if (y < window.getSize().y - menuBase.getSize().y - rect.getSize().y && y > 0) {
                 skip = static_cast<int>(static_cast<float>(skins.size()) *
-                                        (static_cast<float>(y) / static_cast<float>(window.getSize().y)));
+                                        (static_cast<float>(y) / static_cast<float>(window.getSize().y - menuBase.getSize().y)));
             }
         }
 
@@ -111,22 +112,22 @@ int main() {
                             first++;
                         }
                         int buf = -1;
-                        if(lastSel!=-1) {
+                        if (lastSel != -1) {
                             buf = first;
-                            if (first < lastSel){
-                                while (first < lastSel){
-                                    if (lastSelected){
+                            if (first < lastSel) {
+                                while (first < lastSel) {
+                                    if (lastSelected) {
                                         gui[first].setFillColor(sf::Color::Magenta);
-                                    }else{
+                                    } else {
                                         gui[first].setFillColor(sf::Color::White);
                                     }
                                     first++;
                                 }
-                            }else{
-                                while (first > lastSel){
-                                    if (lastSelected){
+                            } else {
+                                while (first > lastSel) {
+                                    if (lastSelected) {
                                         gui[first].setFillColor(sf::Color::Magenta);
-                                    }else{
+                                    } else {
                                         gui[first].setFillColor(sf::Color::White);
                                     }
                                     first--;
