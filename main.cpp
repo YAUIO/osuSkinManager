@@ -17,12 +17,18 @@ int main() {
     sf::Event event;
     sf::RectangleShape rect;
     sf::RectangleShape menuBase;
+    bool init = true;
     bool isSkinListReady = false;
     bool isSkinListNew = true;
     bool trackCursor = false;
+    bool viewChanged = false;
     bool shiftSelection = false;
+    bool settings = false;
     auto skins = std::vector<File>();
+    auto records = std::vector<std::vector<File>>();
     auto gui = std::vector<sf::Text>();
+    auto menu = std::vector<sf::Text>();
+    auto sett = std::vector<sf::Text>();
     int skip = 0;
     int lastSel = -1;
     bool lastSelected = true;
@@ -40,14 +46,19 @@ int main() {
             isSkinListReady = true;
         }
 
-        gui = GUI::getMainGraphics(isSkinListNew, gui, window, skins, skip, rect, menuBase);
-        GUI::getMenuGraphics(window, menuBase);
+        if (!settings) {
+            GUI::getMainGraphics(isSkinListNew, gui, window, skins, skip, rect, menuBase);
+        }else{
+            GUI::getSettings(viewChanged,window,sett);
+        }
+        GUI::getMenuGraphics(init, window, menuBase, menu);
 
         if (trackCursor) {
             int y = sf::Mouse::getPosition(window).y;
             if (y < window.getSize().y - menuBase.getSize().y - rect.getSize().y && y > 0) {
                 skip = static_cast<int>(static_cast<float>(skins.size()) *
-                                        (static_cast<float>(y) / static_cast<float>(window.getSize().y - menuBase.getSize().y)));
+                                        (static_cast<float>(y) /
+                                         static_cast<float>(window.getSize().y - menuBase.getSize().y)));
             }
         }
 
@@ -84,19 +95,39 @@ int main() {
                 } else {
                     if (!shiftSelection) {
                         int i = 0;
-                        for (sf::Text &button: gui) {
-                            if (GUI::isCursorOnButton(window, button)) {
-                                if (button.getFillColor() == sf::Color::Magenta) {
-                                    button.setFillColor(sf::Color::White);
-                                    lastSelected = false;
-                                } else {
-                                    button.setFillColor(sf::Color::Magenta);
-                                    lastSelected = true;
+                        if (sf::Mouse::getPosition(window).y<(window.getSize().y-static_cast<int>(menuBase.getSize().y))) {
+                            for (sf::Text &button: gui) {
+                                if (GUI::isCursorOnButton(window, button)) {
+                                    if (button.getFillColor() == sf::Color::Magenta) {
+                                        button.setFillColor(sf::Color::White);
+                                        lastSelected = false;
+                                    } else {
+                                        button.setFillColor(sf::Color::Magenta);
+                                        lastSelected = true;
+                                    }
+                                    lastSel = i;
+                                    break;
                                 }
-                                lastSel = i;
-                                break;
+                                i++;
                             }
-                            i++;
+                        } else {
+                            for (sf::Text &button: menu) {
+                                if (GUI::isCursorOnButton(window, button)) {
+                                    if (button.getString() == "Settings"){
+                                        settings = !settings;
+                                        if(settings){
+                                            button.setFillColor(sf::Color::Magenta);
+                                            viewChanged = true;
+                                        }else{
+                                            button.setFillColor(sf::Color::White);
+                                        }
+                                    }else if(button.getString() == "Next group"){
+                                        Files::recordGroup(records,skins,gui);
+                                    }
+
+                                    break;
+                                }
+                            }
                         }
                     } else {
                         int first = 0;

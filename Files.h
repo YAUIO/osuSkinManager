@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include "SFML/Graphics/Text.hpp"
+#include "fmt/core.h"
 
 struct File {
     std::string path;
@@ -24,6 +26,8 @@ struct File {
 
 struct Files {
     static std::string osuPath;
+
+    static void recordGroup(std::vector<std::vector<File>> & data, std::vector<File> & skins, std::vector<sf::Text> & menu);
 
     static std::vector<File> getSkins();
 };

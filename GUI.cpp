@@ -43,8 +43,24 @@ void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &element
     }
 }
 
-std::vector<sf::Text>
-GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> buttons, sf::RenderWindow &window, std::vector<File> &files,
+void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements) {
+    int i = 0;
+    while (i < elements.size()) {
+        if (elements[i].getFillColor() != sf::Color::Magenta) {
+            if (GUI::isCursorOnButton(window, elements[i])) {
+                setFillColorDraw(window, elements[i], sf::Color::Green);
+            } else {
+                setFillColorDraw(window, elements[i], sf::Color::White);
+            }
+        }else {
+            window.draw(elements[i]);
+        }
+        i++;
+    }
+}
+
+void
+GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> & buttons, sf::RenderWindow &window, std::vector<File> &files,
                      int const &skip, sf::RectangleShape &rect, sf::RectangleShape const& menuBase) {
     int i = 0;
     int d = 0;
@@ -78,26 +94,50 @@ GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> buttons, sf::RenderW
     }
 
     setActiveTextColor(window, buttons, skip);
-
-    return buttons;
 }
 
-void GUI::getMenuGraphics(sf::RenderWindow & window, sf::RectangleShape & base){
-    auto menu = std::vector<sf::Text>();
+void GUI::getMenuGraphics(bool & init, sf::RenderWindow & window, sf::RectangleShape & base, std::vector<sf::Text> & menu){
     base = sf::RectangleShape(sf::Vector2f(window.getSize().x,140));
     base.setFillColor(sf::Color::Cyan);
     base.setPosition(0,window.getSize().y-base.getSize().y);
     window.draw(base);
 
-    auto text = std::vector<std::string>{"Next group","Apply","Previous group","Reset","Settings"};
+    if(init) {
+        auto text = std::vector<std::string>{"Next group", "Apply", "Previous group", "Reset", "Settings"};
 
-    int i = 0;
+        int i = 0;
 
-    for (std::string const& s : text){
-        auto t = sf::Text(s,font,30);
-        t.setFillColor(sf::Color::White);
-        t.setPosition(sf::Vector2f(20+(i%2)*360,base.getPosition().y+10+(i-i%2)*20));
-        window.draw(t);
-        i++;
+        for (std::string const &s: text) {
+            auto t = sf::Text(s, font, 30);
+            t.setFillColor(sf::Color::White);
+            t.setPosition(sf::Vector2f(20 + (i % 2) * 360, base.getPosition().y + 10 + (i - i % 2) * 20));
+            menu.push_back(t);
+            i++;
+        }
+        init = false;
     }
+
+    setActiveTextColor(window,menu);
+}
+
+void GUI::getSettings(bool & viewChanged,sf::RenderWindow & window, std::vector<sf::Text> & settings){
+    if (viewChanged){
+        settings = std::vector<sf::Text>();
+
+        auto text = std::vector<std::string>{"osu! path", "resolution"};
+
+        int i = 0;
+
+        for (std::string const &s: text) {
+            auto t = sf::Text(s, font, 40);
+            t.setFillColor(sf::Color::White);
+            t.setPosition(sf::Vector2f(window.getSize().x/2-t.getGlobalBounds().width/2, i*60+10));
+            settings.push_back(t);
+            i++;
+        }
+
+        viewChanged = false;
+    }
+
+    setActiveTextColor(window,settings);
 }
