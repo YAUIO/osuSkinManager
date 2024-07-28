@@ -148,6 +148,7 @@ int main() {
                                         init = true;
                                         isSkinListReady = false;
                                         isSkinListNew = true;
+                                        displayingGroup = 0;
                                     }
 
                                     break;
