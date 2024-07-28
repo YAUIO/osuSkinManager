@@ -51,7 +51,7 @@ int main() {
         }else{
             GUI::getSettings(viewChanged,window,sett);
         }
-        GUI::getMenuGraphics(init, window, menuBase, menu);
+        GUI::getMenuGraphics(init, window, menuBase, menu, records.size());
 
         if (trackCursor) {
             int y = sf::Mouse::getPosition(window).y;
@@ -123,6 +123,21 @@ int main() {
                                         }
                                     }else if(button.getString() == "Next group"){
                                         Files::recordGroup(records,skins,gui);
+                                    }else if (button.getString() == "Apply"){
+                                        for (std::vector<File> & f : records) {
+                                            fmt::print("[");
+                                            for (File & t : f) {
+                                                fmt::print(" {},", t.name);
+                                            }
+                                            fmt::print("]\n");
+                                        }
+                                    }else if (button.getString() == "Reset"){
+                                        records.clear();
+                                        gui.clear();
+                                        skins.clear();
+                                        init = true;
+                                        isSkinListReady = false;
+                                        isSkinListNew = true;
                                     }
 
                                     break;

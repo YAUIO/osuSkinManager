@@ -96,7 +96,7 @@ GUI::getMainGraphics(bool &isListNew, std::vector<sf::Text> & buttons, sf::Rende
     setActiveTextColor(window, buttons, skip);
 }
 
-void GUI::getMenuGraphics(bool & init, sf::RenderWindow & window, sf::RectangleShape & base, std::vector<sf::Text> & menu){
+void GUI::getMenuGraphics(bool & init, sf::RenderWindow & window, sf::RectangleShape & base, std::vector<sf::Text> & menu, int const& counter){
     base = sf::RectangleShape(sf::Vector2f(window.getSize().x,140));
     base.setFillColor(sf::Color::Cyan);
     base.setPosition(0,window.getSize().y-base.getSize().y);
@@ -114,8 +114,18 @@ void GUI::getMenuGraphics(bool & init, sf::RenderWindow & window, sf::RectangleS
             menu.push_back(t);
             i++;
         }
+
+        auto c = sf::Text(std::to_string(counter+1), font, 60);
+        c.setFillColor(sf::Color::White);
+        c.setPosition(sf::Vector2f(base.getSize().x-40-c.getGlobalBounds().width,base.getPosition().y+8));
+
+        menu.push_back(c);
+
         init = false;
     }
+
+    menu[menu.size()-1].setString(std::to_string(counter+1));
+    menu[menu.size()-1].setPosition(sf::Vector2f(base.getSize().x-40-menu[menu.size()-1].getGlobalBounds().width,base.getPosition().y+8));
 
     setActiveTextColor(window,menu);
 }

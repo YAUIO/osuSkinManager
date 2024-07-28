@@ -2,6 +2,7 @@
 
 template<typename T>
 void deleteIndex(std::vector<T> &gameWords, const int &i) {
+    fmt::println("{}","call to the template function, expect errors");
     if (i == gameWords.size() - 1) {
         gameWords.pop_back();
     } else {
@@ -17,20 +18,18 @@ void deleteIndex(std::vector<T> &gameWords, const int &i) {
 }
 
 void deleteIndex(std::vector<sf::Text> &gameWords, const int &i) {
-    fmt::println("{} {}", i, (std::string) gameWords[i].getString());
     if (i == gameWords.size() - 1) {
         gameWords.pop_back();
     } else if (i == 0) {
         gameWords = std::vector(gameWords.begin() + 1, gameWords.end());
     } else {
-        auto s = std::vector(gameWords.begin() + i, gameWords.end());
-        int x = 0;
-        while (x >= i) {
+        auto s = std::vector(gameWords.begin() + i + 1, gameWords.end());
+        int x = gameWords.size();
+        while (i < x) {
             gameWords.pop_back();
-            x++;
+            x--;
         }
-        s.insert(s.end(), gameWords.begin(), gameWords.end());
-        gameWords = s;
+        gameWords.insert(gameWords.end(), s.begin(), s.end());
     }
 
 }
@@ -67,7 +66,6 @@ std::vector<File> Files::getSkins() {
 }
 
 void Files::recordGroup(std::vector<std::vector<File>> &data, std::vector<File> &skins, std::vector<sf::Text> &menu) {
-    fmt::println("menu.size() {}", menu.size());
     auto stringSkins = std::vector<std::string>();
     auto selectedSkins = std::vector<File>();
     auto deleteIndexes = std::vector<int>();
@@ -82,9 +80,7 @@ void Files::recordGroup(std::vector<std::vector<File>> &data, std::vector<File> 
     }
 
     for (int const &a: deleteIndexes) {
-        fmt::println("size pre {}",menu.size());
         deleteIndex(menu, a);
-        fmt::println("size after {}",menu.size());
     }
 
     for (std::string &skin: stringSkins) {
