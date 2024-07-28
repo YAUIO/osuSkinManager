@@ -31,6 +31,7 @@ int main() {
     auto sett = std::vector<sf::Text>();
     int skip = 0;
     int lastSel = -1;
+    int displayingGroup = 0;
     bool lastSelected = true;
 
     while (window.isOpen()) {
@@ -51,7 +52,7 @@ int main() {
         }else{
             GUI::getSettings(viewChanged,window,sett);
         }
-        GUI::getMenuGraphics(init, window, menuBase, menu, records.size());
+        GUI::getMenuGraphics(init, window, menuBase, menu, displayingGroup);
 
         if (trackCursor) {
             int y = sf::Mouse::getPosition(window).y;
@@ -122,7 +123,16 @@ int main() {
                                             button.setFillColor(sf::Color::White);
                                         }
                                     }else if(button.getString() == "Next group"){
-                                        Files::recordGroup(records,skins,gui);
+                                        Files::recordGroup(records,skins,gui,displayingGroup);
+                                        displayingGroup++;
+                                        if(displayingGroup!=records.size()){
+                                            Files::displayGroup(records, gui, displayingGroup);
+                                        }
+                                    }else if(button.getString() == "Previous group"){
+                                        if(displayingGroup>0) {
+                                            displayingGroup--;
+                                            Files::displayGroup(records, gui, displayingGroup);
+                                        }
                                     }else if (button.getString() == "Apply"){
                                         for (std::vector<File> & f : records) {
                                             fmt::print("[");

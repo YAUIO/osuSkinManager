@@ -27,7 +27,9 @@ struct File {
 struct Files {
     static std::string osuPath;
 
-    static void recordGroup(std::vector<std::vector<File>> & data, std::vector<File> & skins, std::vector<sf::Text> & menu);
+    static void recordGroup(std::vector<std::vector<File>> & data, std::vector<File> & skins, std::vector<sf::Text> & menu, int const& group);
+
+    static void displayGroup(std::vector<std::vector<File>> &data, std::vector<sf::Text> &menu, int const& number);
 
     static std::vector<File> getSkins();
 };
