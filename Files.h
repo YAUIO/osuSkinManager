@@ -22,6 +22,8 @@ struct File {
         name = fileName;
         isDirectory = is_Directory;
     }
+
+    void rename(std::string const& newName);
 };
 
 struct Files {

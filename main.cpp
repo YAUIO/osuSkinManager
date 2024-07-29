@@ -61,7 +61,8 @@ int main() {
                 for (sf::Text &button: e) {
                     if (GUI::isCursorOnButton(window, button)) {
                         if (button.getString() == "Normalize") {
-
+                            Files::normalize();
+                            window.close();
                         }else if (button.getString() == "Skip") {
                             window.close();
                         }

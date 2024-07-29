@@ -64,6 +64,20 @@ void deleteIndex(std::vector<sf::Text> &gameWords, const int &i) {
     }
 }
 
+void File::rename(std::string const &newName) {
+    if (newName != name) {
+        name = newName;
+        std::string oldPath = path;
+        if(path.contains('/')) {
+            path = path.substr(0,path.find_last_of('/')+1)+name;
+        }else {
+            path = path.substr(0,path.find_last_of('\\')+1)+name;
+        }
+        std::filesystem::rename(oldPath,path);
+    }
+}
+
+
 std::vector<File> Files::getSkins() {
     auto skins = std::vector<File>();
 
@@ -191,5 +205,41 @@ void Files::applyGroups(std::vector<std::vector<File> > &data) {
 }
 
 void Files::normalize() {
+    auto skins = std::vector<File>();
+
+    for (const auto &entry: std::filesystem::directory_iterator(Files::osuPath)) {
+        if (entry.is_directory()) {
+            skins.push_back(
+                File(entry.path().generic_string(), entry.path().filename().generic_string(), true));
+        }
+    }
+
+    std::string buf;
+
+    for (File & f : skins) {
+        int ch = 0;
+        for (char const & c : f.name) {
+            if ((static_cast<int>(c) > 64 && static_cast<int>(c) < 91) || (static_cast<int>(c) > 96 && static_cast<int>(c) < 123)) {
+                break;
+            }
+            ch++;
+        }
+
+        if(ch == f.name.size()) {
+            ch = 0;
+            for (char const & c : f.name) {
+                if (static_cast<int>(c) > 47 && static_cast<int>(c) < 58) {
+                    break;
+                }
+                ch++;
+            }
+        }
+
+        if(ch == f.name.size()) {
+            ch = 0;
+        }
+
+        f.rename(f.name.substr(ch));
+    }
 }
 
