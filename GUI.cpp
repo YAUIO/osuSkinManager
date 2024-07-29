@@ -27,7 +27,7 @@ void setFillColorDraw(sf::RenderWindow &window, sf::Text &text, sf::Color const 
     window.draw(text);
 }
 
-void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements, int const& skip) {
+void GUI::setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements, int const& skip) {
     int i = skip;
     while (i < elements.size()) {
         if (elements[i].getFillColor() != sf::Color::Magenta) {
@@ -43,7 +43,7 @@ void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &element
     }
 }
 
-void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements) {
+void GUI::setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements) {
     int i = 0;
     while (i < elements.size()) {
         if (elements[i].getFillColor() != sf::Color::Magenta) {

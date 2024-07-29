@@ -16,7 +16,6 @@ void deleteIndex(std::vector<T> &gameWords, const int &i) {
         }
         gameWords.insert(gameWords.end(), s.begin(), s.end());
     }
-
 }
 
 template<typename T>
@@ -39,24 +38,30 @@ void replaceIndex(std::vector<T> &gameWords, const int &i, T const &arg) {
         gameWords.push_back(arg);
         gameWords.insert(gameWords.end(), s.begin(), s.end());
     }
-
 }
 
 void deleteIndex(std::vector<sf::Text> &gameWords, const int &i) {
-    if (i == gameWords.size() - 1) {
-        gameWords.pop_back();
-    } else if (i == 0) {
-        gameWords = std::vector(gameWords.begin() + 1, gameWords.end());
-    } else {
-        auto s = std::vector(gameWords.begin() + i + 1, gameWords.end());
-        int x = gameWords.size();
-        while (i < x) {
+    try {
+        if (i == gameWords.size() - 1) {
             gameWords.pop_back();
-            x--;
-        }
-        gameWords.insert(gameWords.end(), s.begin(), s.end());
-    }
+        } else if (i == 0) {
+            gameWords = std::vector(gameWords.begin() + 1, gameWords.end());
+        } else {
+            auto s = std::vector<sf::Text>();
 
+            s = std::vector(gameWords.begin() + i + 1, gameWords.end());
+
+            int x = static_cast<int>(gameWords.size());
+            while (i < x) {
+                gameWords.pop_back();
+                x--;
+            }
+
+            gameWords.insert(gameWords.end(), s.begin(), s.end());
+        }
+    } catch (std::exception &e) {
+        fmt::println("deleteIndex error, {}", e.what());
+    }
 }
 
 std::vector<File> Files::getSkins() {
@@ -65,7 +70,7 @@ std::vector<File> Files::getSkins() {
     for (const auto &entry: std::filesystem::directory_iterator(Files::osuPath)) {
         if (entry.is_directory()) {
             skins.push_back(
-                    File(entry.path().generic_string(), entry.path().filename().generic_string(), true));
+                File(entry.path().generic_string(), entry.path().filename().generic_string(), true));
         }
     }
 
@@ -90,7 +95,7 @@ std::vector<File> Files::getSkins() {
     return skins;
 }
 
-void Files::recordGroup(std::vector<std::vector<File>> &data, std::vector<File> &skins, std::vector<sf::Text> &menu,
+void Files::recordGroup(std::vector<std::vector<File> > &data, std::vector<File> &skins, std::vector<sf::Text> &menu,
                         int const &group) {
     auto stringSkins = std::vector<std::string>();
     auto selectedSkins = std::vector<File>();
@@ -105,8 +110,11 @@ void Files::recordGroup(std::vector<std::vector<File>> &data, std::vector<File> 
         i++;
     }
 
+    i = 0;
+
     for (int const &a: deleteIndexes) {
-        deleteIndex(menu, a);
+        deleteIndex(menu, a-i);
+        i++;
     }
 
     for (std::string &skin: stringSkins) {
@@ -117,14 +125,20 @@ void Files::recordGroup(std::vector<std::vector<File>> &data, std::vector<File> 
             }
         }
     }
+
+
     if (group == data.size()) {
         data.push_back(selectedSkins);
     } else {
-        replaceIndex(data, group, selectedSkins);
+        try {
+            replaceIndex(data, group, selectedSkins);
+        } catch (std::exception &e) {
+            fmt::println("exception in replaceIndex, {}", e.what());
+        }
     }
 }
 
-void Files::displayGroup(std::vector<std::vector<File>> &data, std::vector<sf::Text> &menu, int const &number) {
+void Files::displayGroup(std::vector<std::vector<File> > &data, std::vector<sf::Text> &menu, int const &number) {
     auto map = std::map<std::string, sf::Text *>();
     auto dataMap = std::map<std::string, File *>();
 
@@ -172,3 +186,10 @@ void Files::displayGroup(std::vector<std::vector<File>> &data, std::vector<sf::T
                       },
                       [](sf::Text const &f) { return f.getString(); });
 }
+
+void Files::applyGroups(std::vector<std::vector<File> > &data) {
+}
+
+void Files::normalize() {
+}
+
