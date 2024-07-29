@@ -131,10 +131,10 @@ void GUI::getMenuGraphics(bool & init, sf::RenderWindow & window, sf::RectangleS
 }
 
 void GUI::getSettings(bool & viewChanged,sf::RenderWindow & window, std::vector<sf::Text> & settings){
-    if (viewChanged){
+    if (viewChanged && settings.empty()){
         settings = std::vector<sf::Text>();
 
-        auto text = std::vector<std::string>{"osu! path", "resolution"};
+        auto text = std::vector<std::string>{"osu! path", "resolution", "normalize"};
 
         int i = 0;
 

@@ -209,18 +209,7 @@ void Files::displayGroup(std::vector<std::vector<File> > &data, std::vector<sf::
                       [](sf::Text const &f) { return f.getString(); });
 }
 
-void Files::applyGroups(std::vector<std::vector<File> > &data) {
-}
-
-void Files::normalize() {
-    auto skins = std::vector<File>();
-
-    for (const auto &entry: std::filesystem::directory_iterator(Files::osuPath)) {
-        if (entry.is_directory()) {
-            skins.push_back(
-                File(entry.path().generic_string(), entry.path().filename().generic_string(), true));
-        }
-    }
+void normalize(std::vector<File> & skins) {
 
     std::string buf;
 
@@ -248,6 +237,45 @@ void Files::normalize() {
         }
 
         f.rename(f.name.substr(ch));
+    }
+}
+
+void Files::applyGroups(std::vector<std::vector<File>> &data, bool const& normalize_, std::vector<File> & skins) {
+    int i = 0;
+    int v = 0;
+    auto indexes = std::vector<std::vector<int>>();
+
+    for (std::vector<File> & vf : data){
+        indexes.push_back(std::vector<int>());
+        for (File & f : vf){
+            i = 0;
+            for(File & s : skins) {
+                if (f.name == s.name){
+                    break;
+                }
+                i++;
+            }
+            indexes[v].push_back(i);
+        }
+        v++;
+    }
+
+    if(normalize_){
+        normalize(skins);
+    }
+
+    fmt::println("{}",indexes);
+
+    i = 0;
+    v = 0;
+    while (i<indexes.size()){
+        v = 0;
+        while (v<indexes[i].size()){
+            skins[indexes[i][v]].rename(prefixes[i] + skins[indexes[i][v]].name);
+            fmt::println("{}",data[i][v].name);
+            v++;
+        }
+        i++;
     }
 }
 

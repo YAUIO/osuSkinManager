@@ -7,7 +7,7 @@
 std::string Files::osuPath = "testSample/";
 //std::string Files::osuPath = "G:\\osu!\\Skins";
 sf::Font GUI::font;
-const auto prefixes = std::vector<std::string>{"!-","@-","#-","$-","%-","^-","&-","*-","(-",")-","--","+-"};
+const std::vector<std::string> Files::prefixes = std::vector<std::string>{"!-","#-","$-","*-","+-","@-","^-","`-","{-","|-","}-","~-"};
 
 int main() {
     GUI::font.loadFromFile("deps/font.ttf");
@@ -35,48 +35,7 @@ int main() {
     int lastSel = -1;
     int displayingGroup = 0;
     bool lastSelected = true;
-
-    auto q = sf::Text("Is skin folder normalized? If no, please press \"Normalize\"",GUI::font,30);
-    q.setPosition(sf::Vector2f(window.getSize().x/2-q.getGlobalBounds().width/2,window.getSize().y/3));
-    q.setFillColor(sf::Color::White);
-    auto n = sf::Text("Normalize",GUI::font,24);
-    n.setPosition(sf::Vector2f(window.getSize().x/3-n.getGlobalBounds().width/2,window.getSize().y*2/3));
-    q.setFillColor(sf::Color::White);
-    auto d = sf::Text("Skip",GUI::font,24);
-    d.setPosition(sf::Vector2f(window.getSize().x*2/3-d.getGlobalBounds().width/2,window.getSize().y*2/3));
-    q.setFillColor(sf::Color::White);
-
-    auto e = std::vector<sf::Text>{q,n,d};
-
-    while(window.isOpen()) {
-
-        GUI::setActiveTextColor(window,e);
-
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-
-            if(event.type == sf::Event::MouseButtonPressed) {
-                for (sf::Text &button: e) {
-                    if (GUI::isCursorOnButton(window, button)) {
-                        if (button.getString() == "Normalize") {
-                            Files::normalize();
-                            window.close();
-                        }else if (button.getString() == "Skip") {
-                            window.close();
-                        }
-                    }
-                }
-            }
-        }
-
-        window.display();
-    }
-
-    window.create(sf::VideoMode(800, 900), "SkinManager");
-    window.setPosition(sf::Vector2i(960-window.getSize().x/2,540-window.getSize().y/2));
-    window.setFramerateLimit(240);
+    bool normalize = false;
 
     while (window.isOpen()) {
         window.clear(sf::Color::Black);
@@ -143,19 +102,35 @@ int main() {
                     if (!shiftSelection) {
                         int i = 0;
                         if (sf::Mouse::getPosition(window).y<(window.getSize().y-static_cast<int>(menuBase.getSize().y))) {
-                            for (sf::Text &button: gui) {
-                                if (GUI::isCursorOnButton(window, button)) {
-                                    if (button.getFillColor() == sf::Color::Magenta) {
-                                        button.setFillColor(sf::Color::White);
-                                        lastSelected = false;
-                                    } else {
-                                        button.setFillColor(sf::Color::Magenta);
-                                        lastSelected = true;
+                            if(!settings) {
+                                for (sf::Text &button: gui) {
+                                    if (GUI::isCursorOnButton(window, button)) {
+                                        if (button.getFillColor() == sf::Color::Magenta) {
+                                            button.setFillColor(sf::Color::White);
+                                            lastSelected = false;
+                                        } else {
+                                            button.setFillColor(sf::Color::Magenta);
+                                            lastSelected = true;
+                                        }
+                                        lastSel = i;
+                                        break;
                                     }
-                                    lastSel = i;
-                                    break;
+                                    i++;
                                 }
-                                i++;
+                            }else{
+                                for (sf::Text & button : sett){
+                                    if (GUI::isCursorOnButton(window, button)) {
+                                        if (button.getString() == "normalize") {
+                                            if(button.getFillColor() == sf::Color::Magenta || normalize){
+                                                button.setFillColor(sf::Color::White);
+                                            }else {
+                                                button.setFillColor(sf::Color::Magenta);
+                                            }
+
+                                            normalize = !normalize;
+                                        }
+                                    }
+                                }
                             }
                         } else {
                             for (sf::Text &button: menu) {
@@ -170,7 +145,7 @@ int main() {
                                                 button.setFillColor(sf::Color::White);
                                             }
                                         }else if(button.getString() == "Next group"){
-                                            if(displayingGroup<prefixes.size()) {
+                                            if(displayingGroup<Files::prefixes.size()) {
                                                 Files::recordGroup(records,skins,gui,displayingGroup);
                                                 displayingGroup++;
                                                 if(displayingGroup!=records.size()){
@@ -190,7 +165,16 @@ int main() {
                                                 }
                                                 fmt::print("]\n");
                                             }
-                                            Files::applyGroups(records);
+                                            Files::applyGroups(records,normalize,skins);
+
+                                            records.clear();
+                                            gui.clear();
+                                            skins.clear();
+                                            init = true;
+                                            isSkinListReady = false;
+                                            isSkinListNew = true;
+                                            displayingGroup = 0;
+
                                         }else if (button.getString() == "Reset"){
                                             records.clear();
                                             gui.clear();

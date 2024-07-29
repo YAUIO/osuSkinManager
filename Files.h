@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "SFML/Graphics/Text.hpp"
 #include "fmt/core.h"
+#include "fmt/ranges.h"
 
 struct File {
     std::string path;
@@ -27,9 +28,9 @@ struct File {
 };
 
 struct Files {
-    static std::string osuPath;
+    static const std::vector<std::string> prefixes;
 
-    static void normalize();
+    static std::string osuPath;
 
     static void recordGroup(std::vector<std::vector<File>> & data, std::vector<File> & skins, std::vector<sf::Text> & menu, int const& group);
 
@@ -37,6 +38,6 @@ struct Files {
 
     static std::vector<File> getSkins();
 
-    static void applyGroups(std::vector<std::vector<File>> &data);
+    static void applyGroups(std::vector<std::vector<File>> &data, bool const& normalize_, std::vector<File> & skins);
 };
 
