@@ -69,9 +69,17 @@ void File::rename(std::string const &newName) {
         name = newName;
         std::string oldPath = path;
         if(path.contains('/')) {
-            path = path.substr(0,path.find_last_of('/')+1)+name;
+            int slash = static_cast<int>(path.find_last_of('/')+1);
+            if (slash == path.size()) {
+                slash = static_cast<int>(path.substr(0,path.size()-1).find_last_of('/'))+1;
+            }
+            path = path.substr(0,slash)+name;
         }else {
-            path = path.substr(0,path.find_last_of('\\')+1)+name;
+            int slash = static_cast<int>(path.find_last_of('\\')+1);
+            if (slash == path.size()) {
+                slash = static_cast<int>(path.substr(0,path.size()-1).find_last_of('\\'))+1;
+            }
+            path = path.substr(0,slash)+name;
         }
         std::filesystem::rename(oldPath,path);
     }
