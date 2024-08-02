@@ -29,6 +29,7 @@ int main() {
     auto skins = std::vector<File>();
     auto records = std::vector<std::vector<File>>();
     auto gui = std::vector<sf::Text>();
+    auto guiBase = std::vector<sf::Sprite>();
     auto menu = std::vector<sf::Text>();
     auto sett = std::vector<sf::Text>();
     int skip = 0;
@@ -51,7 +52,7 @@ int main() {
         }
 
         if (!settings) {
-            GUI::getMainGraphics(isSkinListNew, gui, window, skins, skip, rect, menuBase);
+            GUI::getMainGraphics(isSkinListNew,guiBase, gui, window, skins, skip, rect, menuBase);
         }else{
             GUI::getSettings(viewChanged,window,sett);
         }
