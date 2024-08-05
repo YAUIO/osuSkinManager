@@ -38,7 +38,7 @@ void setFillColorDraw(sf::RenderWindow &window, sf::Text &text, sf::Color const 
     window.draw(text);
 }
 
-void setFillColorDraw(sf::RenderWindow &window, sf::Sprite &panel, sf::Texture & texture) {
+void setFillColorDraw(sf::RenderWindow &window, sf::Sprite &panel, sf::Texture const &texture) {
     panel.setTexture(texture);
     window.draw(panel);
 }
@@ -75,37 +75,38 @@ void GUI::setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &el
     }
 }
 
-void setActivePanelColor(sf::RenderWindow &window, std::vector<sf::Sprite> &elements, int const &skip) {
+void setActivePanelColor(sf::RenderWindow &window, std::vector<sf::Sprite> &elements, int const &skip,
+                         sf::Texture const &textIdle, sf::Texture const &textActive) {
     int i = skip;
-    sf::Texture texture = sf::Texture();
-    texture.loadFromFile("deps/sfml.png");
     while (i < elements.size()) {
         if (GUI::isCursorOnButton(window, elements[i])) {
-            setFillColorDraw(window, elements[i], texture);
+            setFillColorDraw(window, elements[i], textActive);
         } else {
-            setFillColorDraw(window, elements[i], texture);
+            setFillColorDraw(window, elements[i], textIdle);
         }
         i++;
     }
 }
 
-void getMainBase(std::vector<sf::Sprite> &vec, std::vector<sf::Text> &mainVec, sf::RenderWindow &window, int const& skip) {
+void
+getMainBase(std::vector<sf::Sprite> &vec, std::vector<sf::Text> &mainVec, sf::RenderWindow &window, int const &skip,
+            sf::Texture const &textIdle, sf::Texture const &textActive) {
     vec.clear();
     for (sf::Text &t: mainVec) {
-        sf::Texture a = sf::Texture();
-        a.loadFromFile("deps/sfml.png", sf::IntRect(0, 0, 250, 30));
-        sf::Sprite sprite = sf::Sprite(a);
-        sprite.setPosition(sf::Vector2f(window.getSize().x/2-sprite.getGlobalBounds().width/2,t.getPosition().y));
+        sf::Sprite sprite = sf::Sprite(textIdle);
+        sprite.setPosition(
+                sf::Vector2f(window.getSize().x / 2 - sprite.getGlobalBounds().width / 2, t.getPosition().y));
         vec.push_back(sprite);
     }
 
-    setActivePanelColor(window,vec,skip);
+    setActivePanelColor(window, vec, skip, textIdle, textActive);
 }
 
 void
 GUI::getMainGraphics(bool &isListNew, std::vector<sf::Sprite> &vec, std::vector<sf::Text> &buttons,
                      sf::RenderWindow &window, std::vector<File> &files,
-                     int const &skip, sf::RectangleShape &rect, sf::RectangleShape const &menuBase) {
+                     int const &skip, sf::RectangleShape &rect, sf::RectangleShape const &menuBase,
+                     sf::Texture const &textIdle, sf::Texture const &textActive) {
     int i = 0;
     int d = 0;
 
@@ -138,7 +139,7 @@ GUI::getMainGraphics(bool &isListNew, std::vector<sf::Sprite> &vec, std::vector<
         }
     }
 
-    getMainBase(vec, buttons, window, skip);
+    getMainBase(vec, buttons, window, skip, textIdle,textActive);
 
     setActiveTextColor(window, buttons, skip);
 }

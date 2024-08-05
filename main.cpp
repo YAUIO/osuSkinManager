@@ -19,6 +19,10 @@ int main() {
     sf::Event event;
     sf::RectangleShape rect;
     sf::RectangleShape menuBase;
+    sf::Texture textIdle;
+    sf::Texture textActive;
+    textIdle.loadFromFile("deps/sfml.png");
+    textActive.loadFromFile("deps/sfml.png");
     bool init = true;
     bool isSkinListReady = false;
     bool isSkinListNew = true;
@@ -52,7 +56,7 @@ int main() {
         }
 
         if (!settings) {
-            GUI::getMainGraphics(isSkinListNew,guiBase, gui, window, skins, skip, rect, menuBase);
+            GUI::getMainGraphics(isSkinListNew,guiBase, gui, window, skins, skip, rect, menuBase, textIdle, textActive);
         }else{
             GUI::getSettings(viewChanged,window,sett);
         }
