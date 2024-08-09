@@ -68,20 +68,20 @@ void File::rename(std::string const &newName) {
     if (newName != name) {
         name = newName;
         std::string oldPath = path;
-        if(path.contains('/')) {
-            int slash = static_cast<int>(path.find_last_of('/')+1);
+        if (path.contains('/')) {
+            int slash = static_cast<int>(path.find_last_of('/') + 1);
             if (slash == path.size()) {
-                slash = static_cast<int>(path.substr(0,path.size()-1).find_last_of('/'))+1;
+                slash = static_cast<int>(path.substr(0, path.size() - 1).find_last_of('/')) + 1;
             }
-            path = path.substr(0,slash)+name;
-        }else {
-            int slash = static_cast<int>(path.find_last_of('\\')+1);
+            path = path.substr(0, slash) + name;
+        } else {
+            int slash = static_cast<int>(path.find_last_of('\\') + 1);
             if (slash == path.size()) {
-                slash = static_cast<int>(path.substr(0,path.size()-1).find_last_of('\\'))+1;
+                slash = static_cast<int>(path.substr(0, path.size() - 1).find_last_of('\\')) + 1;
             }
-            path = path.substr(0,slash)+name;
+            path = path.substr(0, slash) + name;
         }
-        std::filesystem::rename(oldPath,path);
+        std::filesystem::rename(oldPath, path);
     }
 }
 
@@ -92,7 +92,7 @@ std::vector<File> Files::getSkins() {
     for (const auto &entry: std::filesystem::directory_iterator(Files::osuPath)) {
         if (entry.is_directory()) {
             skins.push_back(
-                File(entry.path().generic_string(), entry.path().filename().generic_string(), true));
+                    File(entry.path().generic_string(), entry.path().filename().generic_string(), true));
         }
     }
 
@@ -135,7 +135,7 @@ void Files::recordGroup(std::vector<std::vector<File> > &data, std::vector<File>
     i = 0;
 
     for (int const &a: deleteIndexes) {
-        deleteIndex(menu, a-i);
+        deleteIndex(menu, a - i);
         i++;
     }
 
@@ -209,48 +209,79 @@ void Files::displayGroup(std::vector<std::vector<File> > &data, std::vector<sf::
                       [](sf::Text const &f) { return f.getString(); });
 }
 
-void normalize(std::vector<File> & skins) {
+bool normalize(File &f) {
 
     std::string buf;
+    int ch = 0;
+    for (char const &c: f.name) {
+        if ((static_cast<int>(c) > 64 && static_cast<int>(c) < 91) ||
+            (static_cast<int>(c) > 96 && static_cast<int>(c) < 123)) {
+            break;
+        }
+        ch++;
+    }
 
-    for (File & f : skins) {
-        int ch = 0;
-        for (char const & c : f.name) {
-            if ((static_cast<int>(c) > 64 && static_cast<int>(c) < 91) || (static_cast<int>(c) > 96 && static_cast<int>(c) < 123)) {
+    if (ch == f.name.size()) {
+        ch = 0;
+        for (char const &c: f.name) {
+            if (static_cast<int>(c) > 47 && static_cast<int>(c) < 58) {
                 break;
             }
             ch++;
         }
+    }
 
-        if(ch == f.name.size()) {
-            ch = 0;
-            for (char const & c : f.name) {
-                if (static_cast<int>(c) > 47 && static_cast<int>(c) < 58) {
-                    break;
-                }
-                ch++;
-            }
-        }
+    if (f.name.substr(ch) == f.name || ch == f.name.size()) {
+        return false;
+    }
 
-        if(ch == f.name.size()) {
-            ch = 0;
-        }
+    f.rename(f.name.substr(ch));
+    return true;
+}
 
-        f.rename(f.name.substr(ch));
+void writeBackup(std::vector<File> const &from, std::vector<File> const &to) {
+    std::fstream backup;
+    std::string dir = "deps/backup.txt";
+    backup.open(dir, std::ios::out);
+
+    int i = 0;
+    while (i < from.size()) {
+        backup << fmt::format("{} <- {}\n", to[i].name, from[i].name);
+        i++;
+    }
+
+    backup.close();
+}
+
+void Files::revert() {
+    std::fstream backup;
+    std::string dir = "deps/backup.txt";
+    backup.open(dir, std::ios::in);
+    auto line = std::string();
+
+    while (std::getline(backup, line)) {
+        auto f = File(osuPath + line.substr(0, line.find('<')), line.substr(0, line.find('<')), true);
+        f.rename(line.substr(line.find(" <- ") + 4));
     }
 }
 
-void Files::applyGroups(std::vector<std::vector<File>> &data, bool const& normalize_, std::vector<File> & skins) {
+void Files::applyGroups(std::vector<std::vector<File>> &data, bool const &normalize_, std::vector<File> &skins) {
     int i = 0;
     int v = 0;
     auto indexes = std::vector<std::vector<int>>();
+    bool lastRes = true;
 
-    for (std::vector<File> & vf : data){
+    auto origSkins = skins;
+
+    auto from = std::vector<File>();
+    auto to = std::vector<File>();
+
+    for (std::vector<File> &vf: data) {
         indexes.push_back(std::vector<int>());
-        for (File & f : vf){
+        for (File &f: vf) {
             i = 0;
-            for(File & s : skins) {
-                if (f.name == s.name){
+            for (File &s: skins) {
+                if (f.name == s.name) {
                     break;
                 }
                 i++;
@@ -260,22 +291,46 @@ void Files::applyGroups(std::vector<std::vector<File>> &data, bool const& normal
         v++;
     }
 
-    if(normalize_){
-        normalize(skins);
-    }
-
-    fmt::println("{}",indexes);
-
     i = 0;
-    v = 0;
-    while (i<indexes.size()){
+    while (i < indexes.size()) {
         v = 0;
-        while (v<indexes[i].size()){
+        while (v < indexes[i].size()) {
+            from.push_back(skins[indexes[i][v]]);
+            if (normalize_) {
+                lastRes = normalize(skins[indexes[i][v]]);
+            }
             skins[indexes[i][v]].rename(prefixes[i] + skins[indexes[i][v]].name);
-            fmt::println("{}",data[i][v].name);
+            to.push_back(skins[indexes[i][v]]);
             v++;
         }
         i++;
     }
+
+    if (normalize_) {
+        i = 0;
+        v = 0;
+        auto setInd = std::set<int>();
+        for (std::vector<int> &vec: indexes) {
+            for (int &z: vec) {
+                setInd.insert(z);
+            }
+        }
+
+
+        while (i < skins.size()) {
+            if (!setInd.contains(i)) {
+                from.push_back(skins[i]);
+                lastRes = normalize(skins[i]);
+                if(lastRes){
+                    to.push_back(skins[i]);
+                }else{
+                    from.pop_back();
+                }
+            }
+            i++;
+        }
+    }
+
+    writeBackup(from, to);
 }
 

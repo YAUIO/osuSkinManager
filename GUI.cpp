@@ -153,7 +153,9 @@ void GUI::getMenuGraphics(bool &init, sf::RenderWindow &window, sf::RectangleSha
     window.draw(base);
 
     if (init) {
-        auto text = std::vector<std::string>{"Next group", "Apply", "Previous group", "Reset", "Settings"};
+        menu.clear();
+
+        auto text = std::vector<std::string>{"Next group", "Apply", "Previous group", "Reset", "Settings", "Revert last change"};
 
         int i = 0;
 
@@ -186,7 +188,7 @@ void GUI::getSettings(bool &viewChanged, sf::RenderWindow &window, std::vector<s
     if (viewChanged && settings.empty()) {
         settings = std::vector<sf::Text>();
 
-        auto text = std::vector<std::string>{"osu! path", "resolution", "normalize"};
+        auto text = std::vector<std::string>{"osu! path", "resolution"/*, "normalize"*/};
 
         int i = 0;
 

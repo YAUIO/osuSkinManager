@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <fstream>
+#include <set>
 #include "SFML/Graphics/Text.hpp"
 #include "fmt/core.h"
 #include "fmt/ranges.h"
@@ -39,5 +41,7 @@ struct Files {
     static std::vector<File> getSkins();
 
     static void applyGroups(std::vector<std::vector<File>> &data, bool const& normalize_, std::vector<File> & skins);
+
+    static void revert();
 };
 
