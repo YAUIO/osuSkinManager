@@ -5,7 +5,7 @@
 #include "GUI.h"
 
 //std::string Files::osuPath = "testSample/";
-std::string Files::osuPath = "G:\\osu!\\Skins\\";
+std::string Files::osuPath;
 sf::Font GUI::font;
 const std::vector<std::string> Files::prefixes = std::vector<std::string>{"!-", "#-", "$-", "*-", "+-", "@-", "^-",
                                                                           "`-", "{-", "|-", "}-", "~-"};
@@ -68,6 +68,22 @@ int main() {
     }
 
     if (proceed) {
+
+        if (Files::getOsuPath().empty()){
+            //
+        }else{
+            Files::osuPath = Files::getOsuPath();
+            if(Files::osuPath.contains('\\')){
+                if (!Files::osuPath.ends_with('\\')){
+                    Files::osuPath.append("\\");
+                }
+            }else if(Files::osuPath.contains('/')) {
+                if (!Files::osuPath.ends_with('/')) {
+                    Files::osuPath.append("/");
+                }
+            }
+        }
+
         auto window = sf::RenderWindow(sf::VideoMode(800, 900), "SkinManager");
         window.setPosition(sf::Vector2i(960 - window.getSize().x / 2, 540 - window.getSize().y / 2));
         window.setFramerateLimit(240);

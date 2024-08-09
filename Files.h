@@ -43,5 +43,7 @@ struct Files {
     static void applyGroups(std::vector<std::vector<File>> &data, bool const& normalize_, std::vector<File> & skins);
 
     static void revert();
+
+    static std::string getOsuPath();
 };
 
