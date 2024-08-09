@@ -205,3 +205,16 @@ void GUI::getSettings(bool &viewChanged, sf::RenderWindow &window, std::vector<s
 
     setActiveTextColor(window, settings);
 }
+
+void GUI::getOsuPath(sf::RenderWindow &window){
+    auto t = sf::Text(Files::osuPath,font,22);
+    t.setFillColor(sf::Color::White);
+    t.setPosition(window.getSize().x/2-t.getGlobalBounds().width/2,window.getSize().y/2-t.getGlobalBounds().height/2);
+
+    auto x = sf::Text("Put skin folder path in the first line of config.txt and press Enter",font,22);
+    x.setFillColor(sf::Color::White);
+    x.setPosition(window.getSize().x/2-x.getGlobalBounds().width/2,window.getSize().y/4-x.getGlobalBounds().height/2);
+
+    window.draw(x);
+    window.draw(t);
+}

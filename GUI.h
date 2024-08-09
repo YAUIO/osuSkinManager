@@ -13,4 +13,5 @@ struct GUI {
     static void getSettings(bool & viewChanged,sf::RenderWindow & window, std::vector<sf::Text> & settings);
     static void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements);
     static void setActiveTextColor(sf::RenderWindow &window, std::vector<sf::Text> &elements, int const& skip);
+    static void getOsuPath(sf::RenderWindow &window);
 };
