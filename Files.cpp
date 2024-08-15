@@ -210,7 +210,6 @@ void Files::displayGroup(std::vector<std::vector<File> > &data, std::vector<sf::
 }
 
 bool normalize(File &f) {
-
     std::string buf;
     int ch = 0;
     for (char const &c: f.name) {
@@ -246,7 +245,7 @@ void writeBackup(std::vector<File> const &from, std::vector<File> const &to) {
 
     int i = 0;
     while (i < from.size()) {
-        backup << fmt::format("{} <- {}\n", to[i].name, from[i].name);
+        backup << fmt::format("{}\n{}\n", to[i].name, from[i].name);
         i++;
     }
 
@@ -324,19 +323,20 @@ void Files::applyGroups(std::vector<std::vector<File>> &data, bool const &normal
 
 void Files::revert() {
     std::fstream backup;
-    std::string dir = "deps/backup.txt";
+    std::string dir = deps_path.string().append("backup.txt");
     backup.open(dir, std::ios::in);
     auto line = std::string();
 
     while (std::getline(backup, line)) {
-        auto f = File(osuPath + line.substr(0, line.find('<')), line.substr(0, line.find('<')), true);
-        f.rename(line.substr(line.find(" <- ") + 4));
+        auto f = File(osuPath + line, line, true);
+        std::getline(backup, line);
+        f.rename(line);
     }
 }
 
 std::string Files::getOsuPath(){
     std::fstream cfg;
-    std::string dir = "deps/config.txt";
+    std::string dir = deps_path.string().append("config.txt");
     cfg.open(dir, std::ios::in);
     auto line = std::string();
     std::getline(cfg,line);

@@ -30,6 +30,8 @@ struct File {
 };
 
 struct Files {
+    static const std::filesystem::path deps_path;
+
     static const std::vector<std::string> prefixes;
 
     static std::string osuPath;

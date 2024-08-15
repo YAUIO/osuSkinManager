@@ -15,13 +15,14 @@ const std::vector<char> alphabet = {
         'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 };
 
+const std::filesystem::path Files::deps_path = std::filesystem::current_path().parent_path() / "deps/";
 
 int main() {
-    GUI::font.loadFromFile("deps/font.ttf");
+    GUI::font.loadFromFile(Files::deps_path.string().append("font.ttf"));
     sf::Texture textIdle;
     sf::Texture textActive;
-    textIdle.loadFromFile("deps/sfml.png");
-    textActive.loadFromFile("deps/sfml.png");
+    textIdle.loadFromFile(Files::deps_path.string().append("sfml.png"));
+    textActive.loadFromFile(Files::deps_path.string().append("sfml.png"));
 
     bool proceed = false;
     bool osuPath = false;
@@ -38,34 +39,34 @@ int main() {
         warText.setFillColor(sf::Color::White);
         auto agree = sf::Text("I agree", GUI::font, 22);
         agree.setFillColor(sf::Color::White);
-        agree.setPosition(warning.getSize().x/3-agree.getGlobalBounds().width/2,warning.getSize().y/4*3);
+        agree.setPosition(warning.getSize().x / 3 - agree.getGlobalBounds().width / 2, warning.getSize().y / 4 * 3);
         auto exit = sf::Text("Exit", GUI::font, 22);
         exit.setFillColor(sf::Color::White);
-        exit.setPosition(warning.getSize().x/3*2-exit.getGlobalBounds().width/2,warning.getSize().y/4*3);
+        exit.setPosition(warning.getSize().x / 3 * 2 - exit.getGlobalBounds().width / 2, warning.getSize().y / 4 * 3);
         auto vecC = std::vector<sf::Text>{agree, exit};
         auto e = sf::Event();
-        b1.setPosition(agree.getPosition().x-b1.getGlobalBounds().width/3,agree.getPosition().y);
-        b2.setPosition(exit.getPosition().x-b2.getGlobalBounds().width/3,exit.getPosition().y);
+        b1.setPosition(agree.getPosition().x - b1.getGlobalBounds().width / 3, agree.getPosition().y);
+        b2.setPosition(exit.getPosition().x - b2.getGlobalBounds().width / 3, exit.getPosition().y);
 
         while (warning.isOpen()) {
             warning.clear(sf::Color::Black);
             warning.draw(warText);
             warning.draw(b1);
             warning.draw(b2);
-            GUI::setActiveTextColor(warning,vecC);
+            GUI::setActiveTextColor(warning, vecC);
 
             while (warning.pollEvent(e)) {
                 if (e.type == sf::Event::Closed) {
                     warning.close();
                 }
 
-                if(e.type == sf::Event::MouseButtonPressed){
-                    if(GUI::isCursorOnButton(warning,agree)){
+                if (e.type == sf::Event::MouseButtonPressed) {
+                    if (GUI::isCursorOnButton(warning, agree)) {
                         warning.close();
                         proceed = true;
                     }
 
-                    if(GUI::isCursorOnButton(warning,exit)){
+                    if (GUI::isCursorOnButton(warning, exit)) {
                         warning.close();
                     }
                 }
@@ -78,14 +79,14 @@ int main() {
 
         sf::Event event;
 
-        while(!osuPath) {
+        while (!osuPath) {
 
             auto window = sf::RenderWindow(sf::VideoMode(800, 900), "SkinManager");
             window.setPosition(sf::Vector2i(960 - window.getSize().x / 2, 540 - window.getSize().y / 2));
             window.setFramerateLimit(240);
 
             if (Files::getOsuPath().empty()) {
-                while (window.isOpen()){
+                while (window.isOpen()) {
                     window.clear(sf::Color::Black);
                     GUI::getOsuPath(window);
 
@@ -93,14 +94,14 @@ int main() {
                         if (event.type == sf::Event::KeyPressed) {
                             if (event.key.code == sf::Keyboard::Enter) {
                                 Files::osuPath = Files::getOsuPath();
-                                if (Files::osuPath.contains("Skins")){
+                                if (Files::osuPath.contains("Skins")) {
                                     osuPath = true;
                                     window.close();
-                                }else{
+                                } else {
                                     Files::osuPath.clear();
                                 }
                             }
-                        }else if (event.type == sf::Event::Closed){
+                        } else if (event.type == sf::Event::Closed) {
                             window.close();
                             proceed = false;
                             osuPath = true;
@@ -124,7 +125,7 @@ int main() {
             }
         }
 
-        if(proceed) {
+        if (proceed) {
             auto window = sf::RenderWindow(sf::VideoMode(800, 900), "SkinManager");
             window.setPosition(sf::Vector2i(960 - window.getSize().x / 2, 540 - window.getSize().y / 2));
             window.setFramerateLimit(240);
