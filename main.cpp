@@ -15,7 +15,11 @@ const std::vector<char> alphabet = {
         'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
 };
 
-const std::filesystem::path Files::deps_path = std::filesystem::current_path().parent_path() / "deps/";
+//FOR DEVELOPING :: const std::filesystem::path Files::deps_path = std::filesystem::current_path().parent_path() / "deps/";
+
+//FOR BUILDS ::
+
+const std::filesystem::path Files::deps_path = std::filesystem::current_path() / "deps/";
 
 int main() {
     GUI::font.loadFromFile(Files::deps_path.string().append("font.ttf"));
